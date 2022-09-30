@@ -25,8 +25,10 @@ dependencies {
     implementation("org.smali:smali:2.5.2")
     implementation("app.revanced:multidexlib2:2.5.2.r2")
     implementation("org.apktool:apktool-lib:2.9.0-SNAPSHOT")
-
     implementation(kotlin("reflect"))
+
+    compileOnly("com.google.android:android:4.1.1.4")
+
     testImplementation(kotlin("test"))
 }
 
