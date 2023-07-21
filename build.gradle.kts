@@ -23,7 +23,7 @@ repositories {
 dependencies {
     implementation("xpp3:xpp3:1.1.4c")
     implementation("com.android.tools.smali:smali:3.0.3")
-    implementation("app.revanced:multidexlib2:2.5.3-a3836654")
+    implementation("com.google.guava:guava:32.1.1-android")
     implementation("app.revanced:apktool-lib:2.7.0")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
