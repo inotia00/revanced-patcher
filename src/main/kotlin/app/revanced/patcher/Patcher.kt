@@ -23,12 +23,12 @@ import brut.androlib.res.decoder.ResAttrDecoder
 import brut.androlib.res.decoder.XmlPullStreamDecoder
 import brut.androlib.res.xml.ResXmlPatcher
 import brut.directory.ExtFile
+import com.android.tools.smali.dexlib2.Opcodes
+import com.android.tools.smali.dexlib2.iface.DexFile
+import com.android.tools.smali.dexlib2.writer.io.MemoryDataStore
 import lanchon.multidexlib2.BasicDexFileNamer
 import lanchon.multidexlib2.DexIO
 import lanchon.multidexlib2.MultiDexIO
-import org.jf.dexlib2.Opcodes
-import org.jf.dexlib2.iface.DexFile
-import org.jf.dexlib2.writer.io.MemoryDataStore
 import java.io.File
 import java.io.OutputStream
 import java.nio.file.Files

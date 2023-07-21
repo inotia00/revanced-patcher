@@ -9,6 +9,7 @@ val githubUsername: String = project.findProperty("gpr.user") as? String ?: Syst
 val githubPassword: String = project.findProperty("gpr.key") as? String ?: System.getenv("GITHUB_TOKEN")
 
 repositories {
+    google()
     mavenCentral()
     maven {
         url = uri("https://maven.pkg.github.com/revanced/multidexlib2")
@@ -21,7 +22,7 @@ repositories {
 
 dependencies {
     implementation("xpp3:xpp3:1.1.4c")
-    implementation("app.revanced:smali:2.5.3-a3836654")
+    implementation("com.android.tools.smali:smali:3.0.3")
     implementation("app.revanced:multidexlib2:2.5.3-a3836654")
     implementation("app.revanced:apktool-lib:2.7.0")
 
