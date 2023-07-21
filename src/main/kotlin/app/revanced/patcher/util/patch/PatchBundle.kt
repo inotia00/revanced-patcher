@@ -52,7 +52,7 @@ sealed class PatchBundle(path: String) : File(path) {
                 .stream()
                 .filter { it.name.endsWith(".class") && !it.name.contains("$") }
                 .map { it.realName.replace('/', '.').replace(".class", "") }.iterator()
-            )
+        )
     }
 
     /**
@@ -61,13 +61,15 @@ sealed class PatchBundle(path: String) : File(path) {
      * @param patchBundlePath The path to a patch bundle of dex format.
      * @param dexClassLoader The dex class loader.
      */
-    class Dex(patchBundlePath: String, private val dexClassLoader: ClassLoader) : PatchBundle(patchBundlePath) {
+    class Dex(patchBundlePath: String, private val dexClassLoader: ClassLoader) :
+        PatchBundle(patchBundlePath) {
         /**
          * Load patches from the patch bundle.
          *
          * Patches will be loaded to the provided [dexClassLoader].
          */
-        fun loadPatches() = loadPatches(dexClassLoader,
+        fun loadPatches() = loadPatches(
+            dexClassLoader,
             DexFileFactory.loadDexFile(path, null).classes.asSequence().map { classDef ->
                 classDef.type.substring(1, classDef.length - 1).replace('/', '.')
             }.iterator()

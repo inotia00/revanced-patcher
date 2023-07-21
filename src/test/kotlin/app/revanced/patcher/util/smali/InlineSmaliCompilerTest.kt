@@ -21,7 +21,11 @@ import kotlin.test.assertTrue
 internal class InlineSmaliCompilerTest {
     @Test
     fun `compiler should output valid instruction`() {
-        val want = BuilderInstruction21c(Opcode.CONST_STRING, 0, ImmutableStringReference("Test")) as BuilderInstruction
+        val want = BuilderInstruction21c(
+            Opcode.CONST_STRING,
+            0,
+            ImmutableStringReference("Test")
+        ) as BuilderInstruction
         val have = "const-string v0, \"Test\"".toInstruction()
         instructionEquals(want, have)
     }

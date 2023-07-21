@@ -5,8 +5,8 @@ import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
 import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
-import app.revanced.patcher.extensions.or
 import app.revanced.patcher.extensions.InstructionExtensions.replaceInstruction
+import app.revanced.patcher.extensions.or
 import app.revanced.patcher.patch.*
 import app.revanced.patcher.patch.annotations.DependsOn
 import app.revanced.patcher.patch.annotations.Patch
@@ -112,7 +112,10 @@ class ExampleBytecodePatch : BytecodePatch(listOf(ExampleFingerprint)) {
         )
 
         // store the fields initial value into the first virtual register
-        method.replaceInstruction(0, "sget-object v0, LTestClass;->dummyField:Ljava/io/PrintStream;")
+        method.replaceInstruction(
+            0,
+            "sget-object v0, LTestClass;->dummyField:Ljava/io/PrintStream;"
+        )
 
         // Now let's create a new call to our method and print the return value!
         // You can also use the smali compiler to create instructions.

@@ -75,7 +75,8 @@ internal inline fun <T> Iterable<T>.findIndexed(predicate: (T) -> Boolean): Pair
     return null
 }
 
-class ResourceContext internal constructor(private val resourceCacheDirectory: File) : Context, Iterable<File> {
+class ResourceContext internal constructor(private val resourceCacheDirectory: File) : Context,
+    Iterable<File> {
     val xmlEditor = XmlFileHolder()
 
     operator fun get(path: String) = resourceCacheDirectory.resolve(path)
@@ -114,8 +115,9 @@ class DomFileEditor internal constructor(
     /**
      * The document of the xml file
      */
-    val file: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream)
-        .also(Document::normalize)
+    val file: Document =
+        DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream)
+            .also(Document::normalize)
 
 
     // lazily open an output stream
@@ -152,7 +154,8 @@ class DomFileEditor internal constructor(
             if (!isLocked) {
                 it.value.use { stream ->
                     val result = StreamResult(stream)
-                    TransformerFactory.newInstance().newTransformer().transform(DOMSource(file), result)
+                    TransformerFactory.newInstance().newTransformer()
+                        .transform(DOMSource(file), result)
                 }
 
                 it.value.close()
