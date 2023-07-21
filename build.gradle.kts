@@ -3,28 +3,19 @@ plugins {
     `maven-publish`
 }
 
-group = "app.revanced"
-
-val githubUsername: String = project.findProperty("gpr.user") as? String ?: System.getenv("GITHUB_ACTOR")
-val githubPassword: String = project.findProperty("gpr.key") as? String ?: System.getenv("GITHUB_TOKEN")
+group = "io.github.inotia00"
 
 repositories {
     google()
     mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/revanced/multidexlib2")
-        credentials {
-            username = githubUsername
-            password = githubPassword
-        }
-    }
+    maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
 }
 
 dependencies {
     implementation("xpp3:xpp3:1.1.4c")
     implementation("com.android.tools.smali:smali:3.0.3")
     implementation("com.google.guava:guava:32.1.1-android")
-    implementation("app.revanced:apktool-lib:2.7.0")
+    implementation("io.github.inotia00:apktool-lib:2.7.2-SNAPSHOT")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.22")
