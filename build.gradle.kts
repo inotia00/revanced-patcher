@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.8.22"
     `maven-publish`
+    signing
 }
 
 group = "io.github.inotia00"
@@ -41,18 +42,40 @@ kotlin {
     jvmToolchain(11)
 }
 
+signing {
+    if (
+        System.getenv("GPG_KEY_ID") == null
+        || System.getenv("GPG_KEY") == null
+        || System.getenv("GPG_KEY_PASSWORD") == null
+    ) return@signing
+    useInMemoryPgpKeys(
+        System.getenv("GPG_KEY_ID"),
+        System.getenv("GPG_KEY"),
+        System.getenv("GPG_KEY_PASSWORD"),
+    )
+    sign(publishing.publications)
+}
+
 publishing {
     repositories {
-        if (System.getenv("GITHUB_ACTOR") != null)
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/revanced/revanced-patcher")
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
+        val sonatypeUsername = System.getenv("SONATYPE_USERNAME")
+        val sonatypePassword = System.getenv("SONATYPE_PASSWORD")
+
+        if (sonatypeUsername != null && sonatypePassword != null) {
+            repositories {
+                maven {
+                    url = if (project.version.toString().contains("SNAPSHOT")) {
+                        uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                    } else {
+                        uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    }
+                    credentials {
+                        username = sonatypeUsername
+                        password = sonatypePassword
+                    }
                 }
             }
-        else
+        } else
             mavenLocal()
     }
     publications {
