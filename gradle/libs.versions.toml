@@ -1,9 +1,9 @@
 [versions]
 android = "4.1.1.4"
-kotlin-reflect = "1.9.0"
+kotlin-reflect = "1.9.10"
 apktool-lib = "2.8.2-6"
-kotlin-test = "1.8.20-RC"
-kotlinx-coroutines-core = "1.7.1"
+kotlin-test = "1.9.10"
+kotlinx-coroutines-core = "1.7.3"
 multidexlib2 = "3.0.3.r2"
 smali = "3.0.3"
 xpp3 = "1.1.4c"
