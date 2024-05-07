@@ -1,6 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.7.0"
-    java
+    kotlin("jvm") version "1.9.23"
     `maven-publish`
 }
 
@@ -11,6 +10,7 @@ val githubPassword: String = project.findProperty("gpr.key") as? String ?: Syste
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven {
         url = uri("https://maven.pkg.github.com/revanced/multidexlib2")
         credentials {
@@ -22,12 +22,16 @@ repositories {
 
 dependencies {
     implementation("xpp3:xpp3:1.1.4c")
-    implementation("org.smali:smali:2.5.2")
-    implementation("app.revanced:multidexlib2:2.5.2.r2")
-    implementation("org.apktool:apktool-lib:2.9.0-SNAPSHOT")
+    implementation("app.revanced:smali:2.5.3-a3836654")
+    implementation("app.revanced:multidexlib2:2.5.3-a3836654")
+    // ARSCLib fork with a custom zip implementation to fix performance issues on Android devices.
+    // The fork will no longer be needed after archive2 is finished upstream (https://github.com/revanced/ARSCLib/issues/2).
+    implementation("com.reandroid:arsclib:1.1.7")
 
-    implementation(kotlin("reflect"))
-    testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+
+    compileOnly("com.google.android:android:4.1.1.4")
 }
 
 tasks {
@@ -46,19 +50,13 @@ java {
     withSourcesJar()
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 publishing {
     repositories {
-        if (System.getenv("GITHUB_ACTOR") != null)
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/revanced/revanced-patcher")
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
-                }
-            }
-        else
-            mavenLocal()
+        mavenLocal()
     }
     publications {
         register<MavenPublication>("gpr") {

@@ -1,13 +1,15 @@
 package app.revanced.patcher.usage.bytecode
 
+import app.revanced.patcher.BytecodeContext
 import app.revanced.patcher.annotation.Description
 import app.revanced.patcher.annotation.Name
 import app.revanced.patcher.annotation.Version
-import app.revanced.patcher.data.BytecodeContext
 import app.revanced.patcher.extensions.addInstructions
 import app.revanced.patcher.extensions.or
 import app.revanced.patcher.extensions.replaceInstruction
-import app.revanced.patcher.patch.*
+import app.revanced.patcher.patch.BytecodePatch
+import app.revanced.patcher.patch.OptionsContainer
+import app.revanced.patcher.patch.PatchOption
 import app.revanced.patcher.patch.annotations.DependsOn
 import app.revanced.patcher.patch.annotations.Patch
 import app.revanced.patcher.usage.resource.annotation.ExampleResourceCompatibility
@@ -40,7 +42,7 @@ import kotlin.io.path.Path
 class ExampleBytecodePatch : BytecodePatch(listOf(ExampleFingerprint)) {
     // This function will be executed by the patcher.
     // You can treat it as a constructor
-    override fun execute(context: BytecodeContext): PatchResult {
+    override fun execute(context: BytecodeContext) {
         // Get the resolved method by its fingerprint from the resolver cache
         val result = ExampleFingerprint.result!!
 
@@ -60,7 +62,7 @@ class ExampleBytecodePatch : BytecodePatch(listOf(ExampleFingerprint)) {
         implementation.replaceStringAt(startIndex, "Hello, ReVanced! Editing bytecode.")
 
         // Get the class in which the method matching our fingerprint is defined in.
-        val mainClass = context.findClass {
+        val mainClass = context.classes.findClassProxied {
             it.type == result.classDef.type
         }!!.mutableClass
 
@@ -127,12 +129,6 @@ class ExampleBytecodePatch : BytecodePatch(listOf(ExampleFingerprint)) {
                 invoke-virtual { v0, v1 }, Ljava/io/PrintStream;->println(Ljava/lang/String;)V
                 """
         )
-
-        // Finally, tell the patcher that this patch was a success.
-        // You can also return PatchResultError with a message.
-        // If an exception is thrown inside this function,
-        // a PatchResultError will be returned with the error message.
-        return PatchResultSuccess()
     }
 
     /**

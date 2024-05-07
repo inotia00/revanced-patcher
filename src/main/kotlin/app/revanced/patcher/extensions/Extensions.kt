@@ -39,7 +39,7 @@ fun MutableMethodImplementation.replaceInstructions(index: Int, instructions: Li
 }
 
 fun MutableMethodImplementation.removeInstructions(index: Int, count: Int) {
-    for (i in count downTo 0) {
+    for (i in count - 1 downTo 0) {
         this.removeInstruction(index + i)
     }
 }
@@ -101,11 +101,19 @@ fun MutableMethod.removeInstruction(index: Int) = this.implementation!!.removeIn
 fun MutableMethod.label(index: Int) = this.implementation!!.newLabelForIndex(index)
 
 /**
- * Get the instruction at given index in the method's implementation.
+ * Get an instruction at the given index in the method's implementation.
  * @param index The index to get the instruction at.
  * @return The instruction.
  */
 fun MutableMethod.instruction(index: Int): BuilderInstruction = this.implementation!!.instructions[index]
+
+/**
+ * Get an instruction at the given index in the method's implementation.
+ * @param index The index to get the instruction at.
+ * @param T The type of instruction to return.
+ * @return The instruction.
+ */
+fun <T> MutableMethod.instruction(index: Int): T = instruction(index) as T
 
 /**
  * Add smali instructions to the method.
@@ -212,7 +220,7 @@ private fun replaceOffset(
  */
 internal fun Method.cloneMutable(registerCount: Int = 0) = clone(registerCount).toMutable()
 
-// FIXME: also check the order of parameters as different order equals different method overload
+// FIXME: Also check the order of parameters as different order equals different method overload.
 internal fun parametersEqual(
     parameters1: Iterable<CharSequence>, parameters2: Iterable<CharSequence>
 ): Boolean {
@@ -227,21 +235,4 @@ internal fun parametersEqual(
 
 internal val nullOutputStream = object : OutputStream() {
     override fun write(b: Int) {}
-}
-
-/**
- * Should be used to parse a list of parameters represented by their first letter,
- * or in the case of arrays prefixed with an unspecified amount of '[' character.
- */
-internal fun String.parseParameters(): List<String> {
-    val parameters = mutableListOf<String>()
-    var parameter = ""
-    for (char in this.toCharArray()) {
-        parameter += char
-        if (char == '[') continue
-
-        parameters.add(parameter)
-        parameter = ""
-    }
-    return parameters
 }

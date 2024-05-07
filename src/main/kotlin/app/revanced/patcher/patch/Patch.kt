@@ -1,8 +1,8 @@
 package app.revanced.patcher.patch
 
-import app.revanced.patcher.data.BytecodeContext
-import app.revanced.patcher.data.Context
-import app.revanced.patcher.data.ResourceContext
+import app.revanced.patcher.BytecodeContext
+import app.revanced.patcher.Context
+import app.revanced.patcher.ResourceContext
 import app.revanced.patcher.fingerprint.method.impl.MethodFingerprint
 import java.io.Closeable
 
@@ -17,9 +17,8 @@ sealed interface Patch<out T : Context> : Closeable {
      * The main function of the [Patch] which the patcher will call.
      *
      * @param context The [Context] the patch will work on.
-     * @return The result of executing the patch.
      */
-    fun execute(context: @UnsafeVariance T): PatchResult
+    fun execute(context: @UnsafeVariance T)
 
     /**
      * The closing function for this patch.
@@ -42,3 +41,8 @@ interface ResourcePatch : Patch<ResourceContext>
 abstract class BytecodePatch(
     internal val fingerprints: Iterable<MethodFingerprint>? = null
 ) : Patch<BytecodeContext>
+
+/**
+ * The class type of [Patch].
+ */
+typealias PatchClass = Class<out Patch<Context>>

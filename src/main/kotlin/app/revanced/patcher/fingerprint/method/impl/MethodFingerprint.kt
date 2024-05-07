@@ -1,6 +1,6 @@
 package app.revanced.patcher.fingerprint.method.impl
 
-import app.revanced.patcher.data.BytecodeContext
+import app.revanced.patcher.BytecodeContext
 import app.revanced.patcher.extensions.MethodFingerprintExtensions.fuzzyPatternScanMethod
 import app.revanced.patcher.extensions.MethodFingerprintExtensions.fuzzyScanThreshold
 import app.revanced.patcher.extensions.parametersEqual
@@ -31,7 +31,7 @@ abstract class MethodFingerprint(
     internal val parameters: Iterable<String>? = null,
     internal val opcodes: Iterable<Opcode?>? = null,
     internal val strings: Iterable<String>? = null,
-    internal val customFingerprint: ((methodDef: Method) -> Boolean)? = null
+    internal val customFingerprint: ((methodDef: Method, classDef: ClassDef) -> Boolean)? = null
 ) : Fingerprint {
     /**
      * The result of the [MethodFingerprint] the [Method].
@@ -94,7 +94,7 @@ abstract class MethodFingerprint(
             ) return false
 
             @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-            if (methodFingerprint.customFingerprint != null && !methodFingerprint.customFingerprint!!(method))
+            if (methodFingerprint.customFingerprint != null && !methodFingerprint.customFingerprint!!(method, forClass))
                 return false
 
             val stringsScanResult: StringsScanResult? =
@@ -106,7 +106,10 @@ abstract class MethodFingerprint(
                             val stringsList = methodFingerprint.strings.toMutableList()
 
                             implementation.instructions.forEachIndexed { instructionIndex, instruction ->
-                                if (instruction.opcode.ordinal != Opcode.CONST_STRING.ordinal) return@forEachIndexed
+                                if (
+                                    instruction.opcode != Opcode.CONST_STRING &&
+                                    instruction.opcode != Opcode.CONST_STRING_JUMBO
+                                ) return@forEachIndexed
 
                                 val string = ((instruction as ReferenceInstruction).reference as StringReference).string
                                 val index = stringsList.indexOfFirst(string::contains)
@@ -244,7 +247,7 @@ data class MethodFingerprintResult(
          * The result of scanning strings on the [MethodFingerprint].
          * @param matches The list of strings that were matched.
          */
-        data class StringsScanResult(val matches: List<StringMatch>){
+        data class StringsScanResult(val matches: List<StringMatch>) {
             /**
              * Represents a match for a string at an index.
              * @param string The string that was matched.
@@ -287,7 +290,7 @@ data class MethodFingerprintResult(
      * Use [classDef] where possible.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    val mutableClass by lazy { context.proxy(classDef).mutableClass }
+    val mutableClass by lazy { context.classes.proxy(classDef).mutableClass }
 
     /**
      * Returns a mutable clone of [method]
