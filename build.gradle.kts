@@ -1,9 +1,10 @@
 plugins {
     kotlin("jvm") version "2.0.0"
     `maven-publish`
+    signing
 }
 
-group = "app.revanced"
+group = "io.github.inotia00"
 
 val githubUsername: String = project.findProperty("gpr.user") as? String ?: System.getenv("GITHUB_ACTOR")
 val githubPassword: String = project.findProperty("gpr.key") as? String ?: System.getenv("GITHUB_TOKEN")
@@ -56,11 +57,43 @@ kotlin {
 
 publishing {
     repositories {
-        mavenLocal()
+        val ossrhToken = System.getenv("OSSRH_TOKEN")
+        val ossrhPassword = System.getenv("OSSRH_PASSWORD")
+
+        if (ossrhToken != null && ossrhPassword != null) {
+            repositories {
+                maven {
+                    url = if (project.version.toString().contains("SNAPSHOT")) {
+                        uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                    } else {
+                        uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+                    }
+                    credentials {
+                        username = ossrhToken
+                        password = ossrhPassword
+                    }
+                }
+            }
+        } else
+            mavenLocal()
     }
     publications {
         register<MavenPublication>("gpr") {
             from(components["java"])
         }
     }
+}
+
+signing {
+    if (
+        System.getenv("GPG_KEY_ID") == null
+        || System.getenv("GPG_KEY") == null
+        || System.getenv("GPG_KEY_PASSWORD") == null
+    ) return@signing
+    useInMemoryPgpKeys(
+        System.getenv("GPG_KEY_ID"),
+        System.getenv("GPG_KEY"),
+        System.getenv("GPG_KEY_PASSWORD"),
+    )
+    sign(publishing.publications)
 }
