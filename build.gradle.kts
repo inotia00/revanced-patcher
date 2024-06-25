@@ -12,8 +12,10 @@ val githubPassword: String = project.findProperty("gpr.key") as? String ?: Syste
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
+    maven { url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2") }
     maven {
-        url = uri("https://maven.pkg.github.com/revanced/multidexlib2")
+        url = uri("https://maven.pkg.github.com/revanced/smali")
         credentials {
             username = githubUsername
             password = githubPassword
@@ -24,10 +26,10 @@ repositories {
 dependencies {
     implementation("xpp3:xpp3:1.1.4c")
     implementation("app.revanced:smali:2.5.3-a3836654")
-    implementation("app.revanced:multidexlib2:2.5.3-a3836654")
+    implementation("io.github.inotia00:multidexlib2:2.5.3-a3836654-SNAPSHOT")
     // ARSCLib fork with a custom zip implementation to fix performance issues on Android devices.
     // The fork will no longer be needed after archive2 is finished upstream (https://github.com/revanced/ARSCLib/issues/2).
-    implementation("com.reandroid:arsclib:1.1.7")
+    implementation("io.github.reandroid:ARSCLib:1.1.7")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0")

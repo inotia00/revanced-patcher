@@ -77,7 +77,7 @@ fun float(n: Float) = Scalar(ValueType.FLOAT, n.toBits())
  * @param n The number to encode.
  * @return The integer [Resource].
  */
-fun integer(n: Int) = Scalar(ValueType.DEC, n)
+fun integer(n: Int) = Scalar(ValueType.INT_DEC, n)
 
 /**
  * Create a reference [Resource].
