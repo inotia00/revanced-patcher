@@ -7,6 +7,7 @@ import app.revanced.patcher.extensions.parametersEqual
 import app.revanced.patcher.fingerprint.Fingerprint
 import app.revanced.patcher.fingerprint.method.annotation.FuzzyPatternScanMethod
 import app.revanced.patcher.util.proxy.ClassProxy
+import org.jf.dexlib2.AccessFlags
 import org.jf.dexlib2.Opcode
 import org.jf.dexlib2.iface.ClassDef
 import org.jf.dexlib2.iface.Method
@@ -16,18 +17,18 @@ import org.jf.dexlib2.iface.reference.StringReference
 import org.jf.dexlib2.util.MethodUtil
 
 /**
- * Represents the [MethodFingerprint] for a method.
- * @param returnType The return type of the method.
- * @param access The access flags of the method.
- * @param parameters The parameters of the method.
- * @param opcodes The list of opcodes of the method.
- * @param strings A list of strings which a method contains.
+ * A fingerprint to resolve methods.
+ *
+ * @param returnType The method's return type compared using [String.startsWith].
+ * @param accessFlags The method's exact access flags using values of [AccessFlags].
+ * @param parameters The parameters of the method. Partial matches allowed and follow the same rules as [returnType].
+ * @param opcodes An opcode pattern of the method's instructions. Wildcard or unknown opcodes can be specified by `null`.
+ * @param strings A list of the method's strings compared each using [String.contains].
  * @param customFingerprint A custom condition for this fingerprint.
- * A `null` opcode is equals to an unknown opcode.
  */
 abstract class MethodFingerprint(
     internal val returnType: String? = null,
-    internal val access: Int? = null,
+    internal val accessFlags: Int? = null,
     internal val parameters: Iterable<String>? = null,
     internal val opcodes: Iterable<Opcode?>? = null,
     internal val strings: Iterable<String>? = null,
@@ -83,7 +84,7 @@ abstract class MethodFingerprint(
             if (methodFingerprint.returnType != null && !method.returnType.startsWith(methodFingerprint.returnType))
                 return false
 
-            if (methodFingerprint.access != null && methodFingerprint.access != method.accessFlags)
+            if (methodFingerprint.accessFlags != null && methodFingerprint.accessFlags != method.accessFlags)
                 return false
 
 
