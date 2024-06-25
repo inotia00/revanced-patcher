@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.0.0"
     `maven-publish`
 }
 
@@ -28,8 +28,8 @@ dependencies {
     // The fork will no longer be needed after archive2 is finished upstream (https://github.com/revanced/ARSCLib/issues/2).
     implementation("com.reandroid:arsclib:1.1.7")
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.0.0")
 
     compileOnly("com.google.android:android:4.1.1.4")
 }
